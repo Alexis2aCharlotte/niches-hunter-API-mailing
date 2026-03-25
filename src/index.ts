@@ -8,7 +8,7 @@ import { getUnsubscribeHTML, getResubscribeHTML } from './templates/unsubscribe'
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3003;
+const PORT = process.env.PORT || 3333;
 
 app.use(cors());
 app.use(express.json());
