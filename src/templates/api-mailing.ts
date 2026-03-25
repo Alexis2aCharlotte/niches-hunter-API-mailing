@@ -93,17 +93,17 @@ export function generateApiMailingHTML(params: MailingParams): string {
                     <div style="font-size:11px;font-weight:700;color:#00CC6A;text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">📊 Your Dashboard</div>
                     <table border="0" cellpadding="0" cellspacing="0" width="100%">
                       <tr>
-                        <td width="33%" style="text-align:center;padding:12px 0;">
-                          <div style="font-size:24px;font-weight:800;color:#fff;">${balanceDisplay}</div>
-                          <div style="font-size:11px;color:#666;margin-top:4px;text-transform:uppercase;letter-spacing:1px;">Balance</div>
+                        <td width="33%" valign="top" style="text-align:center;padding:12px 4px;">
+                          <div style="height:32px;line-height:32px;font-size:24px;font-weight:800;color:#fff;">${balanceDisplay}</div>
+                          <div style="height:28px;line-height:14px;font-size:10px;color:#666;margin-top:8px;text-transform:uppercase;letter-spacing:1px;">Balance</div>
                         </td>
-                        <td width="33%" style="text-align:center;padding:12px 0;border-left:1px solid #222;border-right:1px solid #222;">
-                          <div style="font-size:24px;font-weight:800;color:#fff;">${callsThisMonth}</div>
-                          <div style="font-size:11px;color:#666;margin-top:4px;text-transform:uppercase;letter-spacing:1px;">Calls this month</div>
+                        <td width="33%" valign="top" style="text-align:center;padding:12px 4px;border-left:1px solid #222;border-right:1px solid #222;">
+                          <div style="height:32px;line-height:32px;font-size:24px;font-weight:800;color:#fff;">${callsThisMonth}</div>
+                          <div style="height:28px;line-height:14px;font-size:10px;color:#666;margin-top:8px;text-transform:uppercase;letter-spacing:1px;">Calls this month</div>
                         </td>
-                        <td width="33%" style="text-align:center;padding:12px 0;">
-                          <div style="font-size:14px;font-weight:700;color:${lastCallDate ? '#fff' : '#ff6b6b'};">${lastCallDisplay}</div>
-                          <div style="font-size:11px;color:#666;margin-top:4px;text-transform:uppercase;letter-spacing:1px;">Last API call</div>
+                        <td width="33%" valign="top" style="text-align:center;padding:12px 4px;">
+                          <div style="height:32px;line-height:32px;font-size:24px;font-weight:800;color:${lastCallDate ? '#fff' : '#ff6b6b'};">${lastCallDisplay}</div>
+                          <div style="height:28px;line-height:14px;font-size:10px;color:#666;margin-top:8px;text-transform:uppercase;letter-spacing:1px;">Last API call</div>
                         </td>
                       </tr>
                     </table>
