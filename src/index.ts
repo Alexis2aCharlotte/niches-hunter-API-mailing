@@ -107,9 +107,16 @@ app.post('/api-unsubscribe', async (req, res) => {
 
 // ─── Start ──────────────────────────────────────────────
 
+const isTestMode = process.env.TEST_MODE === 'true';
+
 app.listen(PORT, () => {
   console.log(`\n⚡ Niches Hunter API Mailing Service`);
   console.log(`═══════════════════════════════════════════`);
+  if (isTestMode) {
+    console.log(`🧪 MODE: TEST (api_developers_test)`);
+  } else {
+    console.log(`🚀 MODE: PRODUCTION (api_developers)`);
+  }
   console.log(`📍 Port: ${PORT}`);
   console.log(`⏰ CRON géré par Railway (mardi 10h00)`);
   console.log(`📍 Health:        GET  /health`);

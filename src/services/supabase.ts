@@ -16,6 +16,21 @@ function getSupabase(): SupabaseClient {
   return supabaseClient;
 }
 
+// ─── Test Mode ───────────────────────────────────────────
+
+const isTestMode = process.env.TEST_MODE === 'true';
+
+function getDevsTable(): string {
+  const table = isTestMode ? 'api_developers_test' : 'api_developers';
+  return table;
+}
+
+function logTestMode(): void {
+  if (isTestMode) {
+    console.log('   ⚠️  TEST MODE — using api_developers_test');
+  }
+}
+
 // ─── Types ───────────────────────────────────────────────
 
 export interface ApiDeveloper {
@@ -73,8 +88,12 @@ export interface EnrichedDeveloper {
  * Get all active API developers who haven't opted out of the newsletter
  */
 export async function getActiveApiDevelopers(): Promise<ApiDeveloper[]> {
+  const table = getDevsTable();
+  logTestMode();
+  console.log(`   📋 Using table: ${table}`);
+
   const { data, error } = await getSupabase()
-    .from('api_developers')
+    .from(table)
     .select('*')
     .eq('is_active', true)
     .eq('newsletter_opted_out', false);
@@ -250,7 +269,7 @@ export async function getEnrichedDevelopers(): Promise<EnrichedDeveloper[]> {
  */
 export async function unsubscribeDeveloper(email: string): Promise<boolean> {
   const { data, error } = await getSupabase()
-    .from('api_developers')
+    .from(getDevsTable())
     .update({ newsletter_opted_out: true, updated_at: new Date().toISOString() })
     .eq('email', email)
     .eq('newsletter_opted_out', false)
@@ -269,7 +288,7 @@ export async function unsubscribeDeveloper(email: string): Promise<boolean> {
  */
 export async function resubscribeDeveloper(email: string): Promise<boolean> {
   const { data, error } = await getSupabase()
-    .from('api_developers')
+    .from(getDevsTable())
     .update({ newsletter_opted_out: false, updated_at: new Date().toISOString() })
     .eq('email', email)
     .eq('newsletter_opted_out', true)
