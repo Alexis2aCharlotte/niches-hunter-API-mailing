@@ -18,7 +18,7 @@ function getResendClient(): Resend {
 
 const FROM_EMAIL = 'Niches Hunter API <api@nicheshunter.app>';
 const REPLY_TO = 'contact@nicheshunter.app';
-const SITE_URL = process.env.SITE_URL || 'https://nicheshunter.app';
+const SERVICE_URL = process.env.SERVICE_URL || 'https://nicheshunter.app';
 
 function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -39,7 +39,7 @@ export async function sendApiMailingBatch(
   for (let i = 0; i < developers.length; i++) {
     const dev = developers[i];
 
-    const unsubscribeUrl = `${SITE_URL}/api-unsubscribe?email=${encodeURIComponent(dev.email)}`;
+    const unsubscribeUrl = `${SERVICE_URL}/api-unsubscribe?email=${encodeURIComponent(dev.email)}`;
     
     const html = generateApiMailingHTML({
       content,

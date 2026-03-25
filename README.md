@@ -4,10 +4,11 @@ Mailing hebdomadaire d'engagement pour les développeurs API de Niches Hunter.
 
 ## 🏗️ Architecture
 
-- **Récupère 1 niche tendance** depuis la table `niches`
+- **Récupère 1 niche tendance** (meilleur score des 7 derniers jours)
 - **Génère du contenu IA** (highlight niche + API tip + message engagement)
 - **Personnalise par dev** (solde, stats d'usage, dernier appel)
 - **Envoie aux devs actifs** (table `api_developers`, non opt-out)
+- **Gère le désabonnement** (page HTML + update DB)
 - **Notification Telegram** après chaque envoi
 
 ## 📊 Tables Supabase utilisées
@@ -19,17 +20,17 @@ SELECT * FROM api_developers WHERE is_active = true AND newsletter_opted_out = f
 
 ### Table `api_wallets` (solde par dev)
 ```sql
-SELECT balance_cents FROM api_wallets WHERE user_id = ?;
+SELECT * FROM api_wallets WHERE user_id IN (...);
 ```
 
-### Table `api_calls` (stats d'usage)
+### Table `api_calls` (stats d'usage — batch)
 ```sql
-SELECT COUNT(*) FROM api_calls WHERE user_id = ? AND created_at >= first_of_month;
+SELECT user_id, created_at FROM api_calls WHERE user_id IN (...) AND created_at >= first_of_month;
 ```
 
-### Table `niches` (contenu)
+### Table `niches` (contenu — meilleur score 7 jours)
 ```sql
-SELECT * FROM niches ORDER BY created_at DESC LIMIT 1;
+SELECT * FROM niches WHERE created_at >= now() - interval '7 days' ORDER BY score DESC LIMIT 1;
 ```
 
 ## 🔧 Variables d'environnement
@@ -42,22 +43,23 @@ RESEND_API_KEY=xxx
 TELEGRAM_BOT_TOKEN=xxx
 TELEGRAM_CHAT_ID=xxx
 SITE_URL=https://nicheshunter.app
+SERVICE_URL=https://your-railway-url.up.railway.app
 PORT=3003
 ```
 
-## 🚀 Déploiement
+## 🚀 Déploiement Railway
 
-### Railway
 1. Connecter le repo GitHub
-2. Ajouter les variables d'environnement
+2. Ajouter les variables d'environnement (voir `.env.example`)
 3. Configurer un CRON job : `0 10 * * 2` (mardi 10h00) → `POST /generate`
+4. Récupérer l'URL publique Railway et la mettre dans `SERVICE_URL`
 
 ## 📝 Développement local
 
 ```bash
 npm install
 npm run dev       # Serveur Express en mode watch
-npm run preview   # Génère le HTML sans envoyer
+npm run preview   # Génère le HTML sans envoyer (2 versions: normal + low balance)
 npm start         # Lance la génération complète
 ```
 
@@ -67,6 +69,9 @@ npm start         # Lance la génération complète
 |---------|-------|-------------|
 | GET | `/health` | Health check |
 | POST | `/generate` | Déclenche la génération + envoi |
+| GET | `/api-unsubscribe?email=xxx` | Désabonnement (page HTML) |
+| GET | `/api-resubscribe?email=xxx` | Ré-abonnement (page HTML) |
+| POST | `/api-unsubscribe` | Désabonnement programmatique (JSON) |
 
 ## 🔄 Workflow
 
@@ -75,15 +80,15 @@ npm start         # Lance la génération complète
        ↓
 2. POST /generate
        ↓
-3. Récupère 1 niche tendance
+3. Récupère 1 niche tendance (meilleur score, 7 derniers jours)
        ↓
 4. Génère contenu IA (niche highlight + API tip + engagement msg)
        ↓
-5. Récupère les devs actifs (non opt-out)
+5. Récupère les devs actifs (non opt-out) — 1 query
        ↓
-6. Pour chaque dev : fetch wallet + stats
+6. Batch fetch wallets + stats — 3 queries en parallèle
        ↓
-7. Génère HTML personnalisé + envoie via Resend
+7. Génère HTML personnalisé + envoie via Resend (600ms delay)
        ↓
 8. Notification Telegram récap
 ```
@@ -101,6 +106,14 @@ npm start         # Lance la génération complète
 
 ## 🔕 Désabonnement
 
-- Lien dans chaque mail : `nicheshunter.app/api-unsubscribe?email=xxx`
+- Chaque mail contient un lien `GET /api-unsubscribe?email=xxx`
+- Le dev voit une page de confirmation dark theme
+- La page propose un lien pour se ré-abonner
 - Met à jour `api_developers.newsletter_opted_out = true`
-- Le compte API reste actif
+- Le compte API et les crédits restent actifs
+
+## 🔄 Performance
+
+- **3 queries Supabase** pour récupérer tous les devs + wallets + stats (au lieu de 2N+1)
+- Wallets et stats fetchés en **parallèle** (`Promise.all`)
+- Envoi emails séquentiel avec 600ms delay (rate limit Resend)

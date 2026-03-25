@@ -240,3 +240,45 @@ export async function getEnrichedDevelopers(): Promise<EnrichedDeveloper[]> {
     };
   });
 }
+
+// ─── Unsubscribe ─────────────────────────────────────────
+
+/**
+ * Opt-out a developer from the weekly mailing.
+ * Sets newsletter_opted_out = true. The API account stays active.
+ * Returns true if the developer was found and updated.
+ */
+export async function unsubscribeDeveloper(email: string): Promise<boolean> {
+  const { data, error } = await getSupabase()
+    .from('api_developers')
+    .update({ newsletter_opted_out: true, updated_at: new Date().toISOString() })
+    .eq('email', email)
+    .eq('newsletter_opted_out', false)
+    .select('id');
+
+  if (error) {
+    console.error('Error unsubscribing developer:', error);
+    return false;
+  }
+
+  return (data?.length ?? 0) > 0;
+}
+
+/**
+ * Re-subscribe a developer to the weekly mailing.
+ */
+export async function resubscribeDeveloper(email: string): Promise<boolean> {
+  const { data, error } = await getSupabase()
+    .from('api_developers')
+    .update({ newsletter_opted_out: false, updated_at: new Date().toISOString() })
+    .eq('email', email)
+    .eq('newsletter_opted_out', true)
+    .select('id');
+
+  if (error) {
+    console.error('Error resubscribing developer:', error);
+    return false;
+  }
+
+  return (data?.length ?? 0) > 0;
+}
