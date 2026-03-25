@@ -20,7 +20,7 @@ import { notifyTelegram } from './services/telegram';
 export async function generateApiMailing(): Promise<void> {
   console.log('');
   console.log('═'.repeat(60));
-  console.log('⚡ NICHES HUNTER — API Developer Weekly Mailing');
+  console.log('⚡ NICHES HUNTER - API Developer Weekly Mailing');
   console.log('═'.repeat(60));
   console.log('');
 
@@ -40,7 +40,7 @@ export async function generateApiMailing(): Promise<void> {
     // Step 2: Generate AI content
     console.log('🤖 Step 2: Generating weekly content with AI...');
     const content = await generateWeeklyContent(niche);
-    console.log(`   ✅ Content generated (subject: "${content.subject}")`);
+    console.log(`   ✅ Content generated`);
     console.log('');
 
     // Step 3: Get all enriched developers (3 queries total: devs + wallets + stats)
@@ -74,8 +74,6 @@ export async function generateApiMailing(): Promise<void> {
     const lowBalance = developers.filter(d => d.balance_cents < 500).length;
 
     const telegramMessage = `⚡ API Developer Mailing Sent!
-
-📌 ${content.subject}
 
 🎯 Niche of the week:
 • ${niche.title} (Score: ${niche.score}/100)

@@ -25,7 +25,6 @@ function safeJsonParse(value: any, fallback: any = {}): any {
 }
 
 export interface WeeklyContent {
-  subject: string;
   nicheEmoji: string;
   nicheTitle: string;
   nicheCategory: string;
@@ -63,7 +62,6 @@ ${context}
 
 Return a JSON object with:
 {
-  "subject": "Catchy email subject line (max 60 chars, no emoji - we add one automatically)",
   "nicheEmoji": "Single relevant emoji for this niche",
   "nicheHighlight": "2-3 sentences summarizing why this niche is hot right now. Be specific with numbers. Make them want to explore it via the API.",
   "apiTip": "A practical tip for using the Niches Hunter API (e.g. a useful endpoint, a filtering trick, a way to combine data). Keep it concise and actionable, 2-3 sentences.",
@@ -73,6 +71,7 @@ Return a JSON object with:
 Rules:
 - Be CONCISE and PUNCHY. No fluff.
 - Write in English
+- NEVER use em dashes (the long dash character). Use commas, periods, or regular hyphens instead.
 - The API tip should feel genuinely useful, not generic
 - The engagement message should create urgency without being pushy`;
 
@@ -92,7 +91,6 @@ Rules:
     const parsed = JSON.parse(cleaned);
 
     return {
-      subject: parsed.subject || `Trending: ${niche.title}`,
       nicheEmoji: parsed.nicheEmoji || '🎯',
       nicheTitle: niche.title,
       nicheCategory: niche.category,
@@ -105,7 +103,6 @@ Rules:
   } catch (error) {
     console.error('OpenAI generation failed, using fallback:', error);
     return {
-      subject: `Trending: ${niche.title}`,
       nicheEmoji: '🎯',
       nicheTitle: niche.title,
       nicheCategory: niche.category,

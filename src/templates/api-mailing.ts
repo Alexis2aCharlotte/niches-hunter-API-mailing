@@ -29,9 +29,8 @@ function formatLastCall(dateStr: string | null): string {
 
 export function generateApiMailingHTML(params: MailingParams): string {
   const { content, developerName, balanceCents, callsThisMonth, lastCallDate, unsubscribeUrl } = params;
-  const greeting = developerName ? `Hey ${developerName}` : 'Hey';
   const nicheUrl = `${SITE_URL}/niches/${content.nicheDisplayCode}`;
-  const apiDocsUrl = `${SITE_URL}/developers`;
+  const devLoginUrl = 'https://nicheshunter.app/developer';
   const balanceDisplay = formatBalance(balanceCents);
   const lastCallDisplay = formatLastCall(lastCallDate);
 
@@ -47,7 +46,7 @@ export function generateApiMailingHTML(params: MailingParams): string {
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Niches Hunter API — Weekly Brief</title>
+  <title>Niches Hunter API - Weekly Brief</title>
 </head>
 <body style="margin:0;padding:0;background-color:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Roboto,sans-serif;">
   <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding:32px 16px;background-color:#0a0a0a;">
@@ -74,7 +73,7 @@ export function generateApiMailingHTML(params: MailingParams): string {
                   <td style="padding:32px 28px;text-align:center;">
                     <div style="font-size:13px;color:#666;margin-bottom:12px;">${today}</div>
                     <h1 style="margin:0 0 16px;font-size:24px;font-weight:800;color:#fff;letter-spacing:-0.5px;line-height:1.3;">
-                      ${greeting}, here's your weekly brief 👋
+                      Hey fellow dev! 👋
                     </h1>
                     <p style="margin:0;font-size:15px;color:#888;line-height:1.6;">
                       ${content.engagementMessage}
@@ -153,7 +152,7 @@ export function generateApiMailingHTML(params: MailingParams): string {
                   <td style="padding:24px 28px;">
                     <div style="font-size:11px;font-weight:700;color:#FFD700;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;">💡 API Tip of the Week</div>
                     <p style="margin:0 0 20px;font-size:15px;color:#ccc;line-height:1.7;">${content.apiTip}</p>
-                    <a href="${apiDocsUrl}" style="color:#00CC6A;text-decoration:none;font-size:14px;font-weight:600;">
+                    <a href="${devLoginUrl}" style="color:#00CC6A;text-decoration:none;font-size:14px;font-weight:600;">
                       Open API Dashboard →
                     </a>
                   </td>
@@ -171,7 +170,7 @@ export function generateApiMailingHTML(params: MailingParams): string {
                   <td style="padding:24px 28px;text-align:center;">
                     <div style="font-size:15px;color:#FFD700;font-weight:600;margin-bottom:8px;">⚠️ Low balance: ${balanceDisplay}</div>
                     <p style="margin:0 0 16px;font-size:14px;color:#999;">Top up to keep using the API without interruption.</p>
-                    <a href="${SITE_URL}/developers" style="display:inline-block;background:#FFD700;color:#000;padding:12px 28px;border-radius:10px;text-decoration:none;font-size:14px;font-weight:700;">
+                    <a href="${devLoginUrl}" style="display:inline-block;background:#FFD700;color:#000;padding:12px 28px;border-radius:10px;text-decoration:none;font-size:14px;font-weight:700;">
                       Top Up Credits →
                     </a>
                   </td>

@@ -55,7 +55,7 @@ export async function sendApiMailingBatch(
         from: FROM_EMAIL,
         to: dev.email,
         reply_to: REPLY_TO,
-        subject: `⚡ ${content.subject}`,
+        subject: '⚡ Some untapped niches to build in!',
         html,
       });
       success++;
